@@ -15,7 +15,14 @@ spec:
     redis-node: "true"
 {{ include "labels.standard" . | indent 4 }}
   type: "{{ .Values.servers.serviceType }}"
+  {{- if (eq "ClusterIP" .Values.servers.serviceType) }}
   clusterIP: None
+  {{- else}}
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  {{- end }}
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
